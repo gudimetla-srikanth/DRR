@@ -1,0 +1,174 @@
+.drr {
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    top: 50px;
+    width: 98vw;
+}
+
+.add {
+    padding: 10px;
+    margin: 5px;
+    border-radius: 25px;
+    background-color: rgb(67, 67, 230);
+    font-weight: bold;
+    width: 80px;
+}
+
+.update {
+    color: white;
+    flex-direction: column;
+    justify-content: left !important;
+}
+
+.save {
+    background-color: rgb(55, 233, 35);
+    margin: 2px;
+    height: 30px;
+    width: 50px;
+    position: relative;
+    right: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.cancel {
+    background-color: rgb(211, 15, 15);
+    margin: 2px;
+    height: 30px;
+    width: 70px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.tableHead {
+    box-sizing: border-box;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 2px solid gray;
+    margin: 5px;
+    padding: 2px;
+}
+
+.small-row,
+.newtable {
+    box-sizing: border-box;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 2px solid gray;
+    margin: 5px;
+    padding: 2px;
+}
+
+input {
+    width: 40px;
+}
+
+.exclu,
+.eddr {
+    width: 100px;
+}
+
+.small-box,
+.large-box,
+.medium-box,
+.esmall-box {
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.action,
+.id,
+.start,
+.end,
+.month,
+.dates,
+.numberO,
+.lead,
+.expected {
+    border-right: 2px solid gray;
+}
+
+.small-box {
+    flex: 1;
+}
+
+.large-box {
+    flex: 2;
+}
+
+.medium-box {
+    flex: 1.5
+}
+
+.esmall-box {
+    flex: 1.2;
+}
+
+/* for mobile */
+@media screen and (max-width:400px) {
+    .drr {
+        position: relative;
+        top: 10px;
+        margin-left: auto;
+        margin-right: auto;
+        width: 98vw;
+        font-size: 8px;
+    }
+
+    .newTableRow {
+        display: flex;
+        padding: 20px;
+        flex-direction: column;
+        justify-content: left !important;
+        align-items: center;
+    }
+
+    input {
+        width: 200px !important;
+        border: none;
+        background-color: rgb(144, 147, 136);
+    }
+
+    .small-box,
+    .large-box,
+    .medium-box,
+    .esmall-box {
+        padding: 4px;
+        margin: 1px;
+    }
+
+    .action,
+    .id,
+    .start,
+    .end,
+    .month,
+    .dates,
+    .numberO,
+    .lead,
+    .expected {
+        border: none;
+    }
+
+    .line {
+        border-right: 2px solid gray;
+    }
+
+    .add {
+        background-color: rgb(130, 175, 226);
+        width: 70px;
+        font-size: 15px;
+    }
+
+    .save {
+        right: 0px !important;
+    }
+}
