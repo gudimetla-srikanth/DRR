@@ -1,7 +1,9 @@
 import React, { useState } from 'react'
 import './drr.css'
+// import axios from 'axios'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import axios from 'axios';
 export default function Drr() {
     const [renderData, setRenderData] = useState([])
     const [updateCol, setUpdatecol] = useState(false);
@@ -30,10 +32,12 @@ export default function Drr() {
         }
     }
     let [count, setCount] = useState(0)
-    const saveHandle = () => {
+    //when using axios
+    // const saveHandle = async() => {
+    const saveHandle = async () => {
         //data checking
         if (data.id === "" && data.leadCount === "" && data.expectedDRR === "" && data.dateExcluded === "") {
-            toast('Enter all data')
+            toast('Enter Remaining data')
         }
         else {
             const last = new Date().getFullYear() + "-" + (1 + new Date().getMonth()) + "-" + new Date().getDay();
@@ -47,7 +51,7 @@ export default function Drr() {
             const starValue = Number(sv[2])
             const endValue = Number(ev[2])
             if (endValue < starValue) {
-                toast("Incorrect Data");
+                toast("Enter Correct Data");
             }
             else {
                 //logic for cell data
@@ -76,6 +80,8 @@ export default function Drr() {
                 setlastUpdatedTime(lastTime)
                 //adding data to the rendered data array
                 setRenderData([...renderData, data])
+                // axios for data submission to the backend if neded
+                // // await axios.post("some url",{...data,numberDays,last})
                 const dataOb = {
                     id: "",
                     startDate: "",
@@ -87,6 +93,7 @@ export default function Drr() {
                 setData(dataOb)
             }
         }
+
         setUpdatecol(false)
     }
     // to close the row
