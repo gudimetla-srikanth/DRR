@@ -1,15 +1,16 @@
 import React, { useState } from 'react'
 import './drr.css'
-// import axios from 'axios'
+//importing toastify container for message chowing
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import axios from 'axios';
+//our main function 
 export default function Drr() {
     let [renderData, setRenderData] = useState([])
-    let [updateCol, setUpdatecol] = useState(false);
+    let [showRow, setShowRow] = useState(false);
+    const [count, setCount] = useState(0)
     let [data, setData] = useState({
         id: "",
-        days: "Nodata",
+        days: "",
         monthY: "",
         startDate: "",
         endDate: "",
@@ -21,40 +22,30 @@ export default function Drr() {
     //adding user data to data object
     const dataAddHandle = (e) => {
         setData({ ...data, [e.target.name]: e.target.value })
-    }
-    const updateHandle = () => {
-        if (updateCol) {
-            setUpdatecol(false)
-        } else {
-            setUpdatecol(true)
+        if (e.target.name === "endDate") {
+            //setting month value
+            console.log(data)
+            setData({
+                ...data,
+                [e.target.name]: e.target.value,
+                monthY: data.startDate.substring(5, 7)
+            })
         }
-    }
-    //when using axios
-    // const saveHandle = async() => {
-    const saveHandle = async () => {
-        if (data.id == "" && data.startDate == "" && data.endDate == "" && data.leadCount == "" && data.dateExcluded == "" && data.expectedDRR == "") {
-            toast("Enter all data")
-        } else {
+        if (e.target.name === "leadCount" && data.dateExcluded != "") {
             console.log("data:" + data)
             let startVal = new Date(data.startDate);
             let endVal = new Date(data.endDate)
-            const lasttime = new Date();
-            const updatedDay = lasttime.toString()
-            data.lastUpdatedTime = lasttime.getFullYear() + ":" + (1 + lasttime.getMonth()) + ":" + updatedDay.toString().substring(8, 10)
-            console.log("data.lastUpdatedTime:" + data.lastUpdatedTime)
             let dateArray = data.dateExcluded.split(',');
             console.log("dateArray:" + dateArray)
             console.log("srtartvalue,endvalue:" + startVal, endVal)
             if (startVal.getMonth() <= endVal.getMonth()) {
                 data.monthY = startVal.getMonth() + 1
                 console.log(data.monthY)
-                console.log("suceess")
                 const mapVal = new Map()
                 for (let i = 0; i < dateArray.length; i++) {
                     const value = dateArray[i]
                     const dateCheck = new Date(value)
                     if (value.substring(5, 7) == (dateCheck.getMonth() + 1)) {
-                        toast("true")
                         if (mapVal.get(dateArray[i]) === 1) {
                             mapVal.set(dateArray[i], 1)
                         } else {
@@ -69,22 +60,50 @@ export default function Drr() {
                             console.log("endDateDay:" + endDateDay)
                             if (individualArrayDateDay >= startDateDay && individualArrayDateDay <= endDateDay) {
                                 console.log("validation success")
-                                data.days = i + 1
+                                //setting days value
+                                setData({
+                                    ...data,
+                                    [e.target.name]: e.target.value,
+                                    days: i + 1
+                                })
                                 console.log("data.days value:" + data.days)
                             }
                         }
+                    } else {
+                        toast("Date is error")
                     }
                 }
+                //reinitializing map to original value
                 mapVal.clear()
-                if (data.days !== "Nodata") {
-                    setRenderData([...renderData, data])
-                }
-
             }
+            console.log("data.days fhjkdfghdgjh" + data.days)
         }
+    }
+    const updateHandle = () => {
+        if (showRow) {
+            setShowRow(false)
+        } else {
+            setShowRow(true)
+        }
+    }
+    const saveHandle = () => {
+        if (data.days == "") {
+            setData({
+                ...data,
+                days: 0
+            })
+        }
+        console.log("data.days: rftyhr" + data.days)
+        if (data.days != "" && data.monthY != "") {
+            setRenderData([...renderData, data])
+        } else {
+            toast("Data is invalid")
+            setRenderData([...renderData])
+        }
+        setShowRow(false)
         setData({
             id: "",
-            days: "Nodata",
+            days: "",
             monthY: "",
             startDate: "",
             endDate: "",
@@ -93,13 +112,11 @@ export default function Drr() {
             expectedDRR: "",
             lastUpdatedTime: ""
         })
-        setUpdatecol(false)
+        console.log(data)
     }
     const cancelHandle = () => {
-        setUpdatecol(false)
+        setShowRow(false)
     }
-    console.log("renderData:", renderData)
-    console.log("data:" + data)
     return (
         <div className="drr">
             {/* add button */}
@@ -119,7 +136,7 @@ export default function Drr() {
                     <div className="esmall-box last line">Last Updated</div>
                 </div>
                 {/* to open or to close the updated row */}
-                {updateCol ?
+                {showRow ?
                     <div className="small-row newTableRow">
                         <div className="small-box action">N/A</div>
                         <div className="small-box id" >
