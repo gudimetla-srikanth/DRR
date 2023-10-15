@@ -5,20 +5,18 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
 export default function Drr() {
-    const [renderData, setRenderData] = useState([])
-    const [updateCol, setUpdatecol] = useState(false);
-    const [action, setAction] = useState('')
-    const [monthYear, setmonthYear] = useState('')
-    const [numberDays, setnumberDays] = useState('')
-    const [lastUpdated, setlastUpdated] = useState('')
-    const [lastUpdatedTime, setlastUpdatedTime] = useState('')
-    const [data, setData] = useState({
+    let [renderData, setRenderData] = useState([])
+    let [updateCol, setUpdatecol] = useState(false);
+    let [data, setData] = useState({
         id: "",
+        days: "Nodata",
+        monthY: "",
         startDate: "",
         endDate: "",
         dateExcluded: "",
         leadCount: "",
-        expectedDRR: ""
+        expectedDRR: "",
+        lastUpdatedTime: ""
     })
     //adding user data to data object
     const dataAddHandle = (e) => {
@@ -31,84 +29,77 @@ export default function Drr() {
             setUpdatecol(true)
         }
     }
-    let [count, setCount] = useState(0)
     //when using axios
     // const saveHandle = async() => {
     const saveHandle = async () => {
-        //data checking
-        if (data.id === "" && data.leadCount === "" && data.expectedDRR === "" && data.dateExcluded === "") {
-            toast('Enter Remaining data')
-        }
-        else {
-            const last = new Date().getFullYear() + "-" + (1 + new Date().getMonth()) + "-" + new Date().getDay();
-            const lastTime = new Date().getHours() + "-" + new Date().getMinutes() + "-" + new Date().getSeconds()
-            const star = new Date(data.startDate);
-            const end = new Date(data.endDate);
-            setmonthYear((1 + star.getMonth()))
-            const dateArray = data.dateExcluded.split(',');
-            const sv = data.startDate.split('-');
-            const ev = data.endDate.split('-');
-            const starValue = Number(sv[2])
-            const endValue = Number(ev[2])
-            if (endValue < starValue) {
-                toast("Enter Correct Data");
-            }
-            else {
-                //logic for cell data
+        if (data.id == "" && data.startDate == "" && data.endDate == "" && data.leadCount == "" && data.dateExcluded == "" && data.expectedDRR == "") {
+            toast("Enter all data")
+        } else {
+            console.log("data:" + data)
+            let startVal = new Date(data.startDate);
+            let endVal = new Date(data.endDate)
+            const lasttime = new Date();
+            const updatedDay = lasttime.toString()
+            data.lastUpdatedTime = lasttime.getFullYear() + ":" + (1 + lasttime.getMonth()) + ":" + updatedDay.toString().substring(8, 10)
+            console.log("data.lastUpdatedTime:" + data.lastUpdatedTime)
+            let dateArray = data.dateExcluded.split(',');
+            console.log("dateArray:" + dateArray)
+            console.log("srtartvalue,endvalue:" + startVal, endVal)
+            if (startVal.getMonth() <= endVal.getMonth()) {
+                data.monthY = startVal.getMonth() + 1
+                console.log(data.monthY)
+                console.log("suceess")
+                const mapVal = new Map()
                 for (let i = 0; i < dateArray.length; i++) {
-                    console.log(dateArray[i])
-                    const dateCheck = new Date(dateArray[i]);
-                    if (dateCheck.getFullYear() === star.getFullYear()) {
-                        const checkM = 1 + dateCheck.getMonth();
-                        const starM = 1 + star.getMonth();
-                        const endM = 1 + end.getMonth();
-                        if (checkM >= starM && checkM <= endM) {
-                            const checkD = dateArray[i].split('-');
-                            const checkValue = Number(checkD[2])
-                            const starValue = Number(sv[2])
-                            const endValue = Number(ev[2])
-                            if (checkValue >= starValue && checkValue <= endValue) {
-                                setCount(count + 1)
+                    const value = dateArray[i]
+                    const dateCheck = new Date(value)
+                    if (value.substring(5, 7) == (dateCheck.getMonth() + 1)) {
+                        toast("true")
+                        if (mapVal.get(dateArray[i]) === 1) {
+                            mapVal.set(dateArray[i], 1)
+                        } else {
+                            mapVal.set(dateArray[i], 1)
+                            let individualArrayDate = dateArray[i]
+                            console.log("individualArrayDate:" + individualArrayDate)
+                            let individualArrayDateDay = individualArrayDate.substring(8, 10)
+                            console.log("individualArrayDateDay:" + individualArrayDateDay)
+                            let startDateDay = data.startDate.substring(8, 10)
+                            console.log("startDateDay:" + startDateDay)
+                            let endDateDay = data.endDate.substring(8, 10)
+                            console.log("endDateDay:" + endDateDay)
+                            if (individualArrayDateDay >= startDateDay && individualArrayDateDay <= endDateDay) {
+                                console.log("validation success")
+                                data.days = i + 1
+                                console.log("data.days value:" + data.days)
                             }
                         }
                     }
                 }
-                let days = endValue - 1 - count;
-                setnumberDays(days)
-                setCount(0)
-                setlastUpdated(last)
-                setlastUpdatedTime(lastTime)
-                //adding data to the rendered data array
-                setRenderData([...renderData, data])
-                // axios for data submission to the backend if neded
-                // // await axios.post("some url",{...data,numberDays,last})
-                const dataOb = {
-                    id: "",
-                    startDate: "",
-                    endDate: "",
-                    dateExcluded: "",
-                    leadCount: "",
-                    expectedDRR: ""
+                mapVal.clear()
+                if (data.days !== "Nodata") {
+                    setRenderData([...renderData, data])
                 }
-                setData(dataOb)
+
             }
         }
-
-        setUpdatecol(false)
-    }
-    // to close the row
-    const cancelHandle = () => {
-        setRenderData([...renderData])
         setData({
             id: "",
+            days: "Nodata",
+            monthY: "",
             startDate: "",
             endDate: "",
             dateExcluded: "",
             leadCount: "",
-            expectedDRR: ""
+            expectedDRR: "",
+            lastUpdatedTime: ""
         })
         setUpdatecol(false)
     }
+    const cancelHandle = () => {
+        setUpdatecol(false)
+    }
+    console.log("renderData:", renderData)
+    console.log("data:" + data)
     return (
         <div className="drr">
             {/* add button */}
@@ -140,11 +131,11 @@ export default function Drr() {
                         <div className="small-box end">
                             <input type="date" name="endDate" placeholder='end date' value={data.endDate} onChange={dataAddHandle} />
                         </div>
-                        <div className="medium-box month"></div>
+                        <div className="medium-box month">{data.monthY}</div>
                         <div className="large-box dates">
                             <input type="text" name="dateExcluded" placeholder='Excluded dates' className="exclu" value={data.dateExcluded} onChange={dataAddHandle} />
                         </div>
-                        <div className="large-box numberO"></div>
+                        <div className="large-box numberO">{data.days}</div>
                         <div className="small-box lead">
                             <input type="text" name="leadCount" placeholder='lead count' value={data.leadCount} onChange={dataAddHandle} />
                         </div>
@@ -164,15 +155,15 @@ export default function Drr() {
                         <div className="small-box id line" ><div>{val.id}</div></div>
                         <div className="small-box start line"><div>{val.startDate}</div></div>
                         <div className="small-box end line"><div>{val.endDate}</div></div>
-                        <div className="medium-box month line"><div>{monthYear}</div></div>
+                        <div className="medium-box month line"><div>{val.monthY}</div></div>
                         <div className="large-box dates line"><div>{val.dateExcluded}</div></div>
-                        <div className="large-box numberO line"><div>{numberDays}</div></div>
+                        <div className="large-box numberO line"><div>{val.days}</div></div>
                         <div className="small-box lead line"><div>{val.leadCount}</div></div>
                         <div className="large-box expected line"><div>{val.expectedDRR}</div></div>
                         <div className="esmall-box last"><div>
                             <div className="latest">
-                                <div>{lastUpdated}</div>
-                                <div>{lastUpdatedTime}</div>
+                                <div>{val.lastUpdatedTime}</div>
+                                <div>updated time</div>
                             </div>
                         </div></div>
                     </div>)
