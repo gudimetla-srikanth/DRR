@@ -10,8 +10,8 @@ export default function Drr() {
     const [count, setCount] = useState(0)
     let [data, setData] = useState({
         id: "",
-        days: "",
-        monthY: "",
+        days: "No Data Yet",
+        monthY: "No Data Yet",
         startDate: "",
         endDate: "",
         dateExcluded: "",
@@ -61,10 +61,12 @@ export default function Drr() {
                             if (individualArrayDateDay >= startDateDay && individualArrayDateDay <= endDateDay) {
                                 console.log("validation success")
                                 //setting days value
+                                let startNumDayVal = Number(startDateDay);
+                                let endNumDayVal = Number(endDateDay)
                                 setData({
                                     ...data,
                                     [e.target.name]: e.target.value,
-                                    days: i + 1
+                                    days: endNumDayVal - (startNumDayVal - 1) - i - 1
                                 })
                                 console.log("data.days value:" + data.days)
                             }
@@ -87,18 +89,10 @@ export default function Drr() {
         }
     }
     const saveHandle = () => {
-        if (data.days == "") {
-            setData({
-                ...data,
-                days: 0
-            })
-        }
-        console.log("data.days: rftyhr" + data.days)
-        if (data.days != "" && data.monthY != "") {
+        if (data.days) {
             setRenderData([...renderData, data])
         } else {
-            toast("Data is invalid")
-            setRenderData([...renderData])
+            toast("days value is empty")
         }
         setShowRow(false)
         setData({
